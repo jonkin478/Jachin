@@ -401,9 +401,14 @@ footer h2 {
     transition: 0.3s;
 }
 
-.btn-save:hover {
+.btn-save:hover:not(:disabled) {
     background: #4cb8ff;
     transform: translateY(-2px);
+}
+
+.btn-save:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
 }
 
 .btn-cancel {
@@ -432,6 +437,35 @@ footer h2 {
 
 .success-message.show {
     display: block;
+}
+
+.error-message {
+    background: #f8d7da;
+    color: #721c24;
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    display: none;
+}
+
+.error-message.show {
+    display: block;
+}
+
+.loading-spinner {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    border: 2px solid #f3f3f3;
+    border-top: 2px solid #0a5ea8;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-right: 8px;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
 }
 
 @keyframes slideIn {
@@ -686,15 +720,16 @@ html {
             <button class="admin-close" onclick="closeAdminPanel()">×</button>
         </div>
 
-        <div class="success-message" id="successMessage">✓ Changes saved! Refresh page to see updates everywhere.</div>
+        <div class="success-message" id="successMessage">✓ Changes saved successfully!</div>
+        <div class="error-message" id="errorMessage">✗ Error saving changes</div>
 
         <div class="admin-tabs">
-            <button class="admin-tab active" onclick="switchTab('basic')">Basic Info</button>
-            <button class="admin-tab" onclick="switchTab('about')">About</button>
-            <button class="admin-tab" onclick="switchTab('values')">Values</button>
-            <button class="admin-tab" onclick="switchTab('achievements')">Achievements</button>
-            <button class="admin-tab" onclick="switchTab('journey')">Journey</button>
-            <button class="admin-tab" onclick="switchTab('images')">Images</button>
+            <button class="admin-tab active" onclick="switchTab(event, 'basic')">Basic Info</button>
+            <button class="admin-tab" onclick="switchTab(event, 'about')">About</button>
+            <button class="admin-tab" onclick="switchTab(event, 'values')">Values</button>
+            <button class="admin-tab" onclick="switchTab(event, 'achievements')">Achievements</button>
+            <button class="admin-tab" onclick="switchTab(event, 'journey')">Journey</button>
+            <button class="admin-tab" onclick="switchTab(event, 'images')">Images</button>
         </div>
 
         <!-- Basic Info Tab -->
@@ -867,50 +902,61 @@ html {
 
         <div class="admin-buttons">
             <button class="btn-cancel" onclick="closeAdminPanel()">Cancel</button>
-            <button class="btn-save" id="saveBtn" onclick="saveChanges()">Save Changes (Local)</button>
+            <button class="btn-save" id="saveBtn" onclick="saveChanges()">Save Changes</button>
         </div>
     </div>
 </div>
 
 <script>
-// Load data from localStorage
-function loadData() {
-    const data = JSON.parse(localStorage.getItem('portfolioData')) || {};
+const GITHUB_TOKEN = 'ghp_L9QXe0WCf5FQYQKvJVhxB8CwH0T0jW3M78aW';
+const GITHUB_OWNER = 'jonkin478';
+const GITHUB_REPO = 'jachin';
+const DATA_FILE = 'portfolio-data.json';
+
+// Load data from GitHub
+async function loadData() {
+    try {
+        // Try to fetch from GitHub
+        const response = await fetch(`https://raw.githubusercontent.com/${GITHUB_OWNER}/${GITHUB_REPO}/main/${DATA_FILE}`);
+        if (response.ok) {
+            const data = await response.json();
+            applyData(data);
+            return;
+        }
+    } catch (error) {
+        console.log('GitHub load failed, trying localStorage');
+    }
     
-    // Basic Info
+    // Fallback to localStorage
+    const localData = JSON.parse(localStorage.getItem('portfolioData')) || {};
+    applyData(localData);
+}
+
+function applyData(data) {
     document.getElementById('headerName').textContent = data.name || 'Jachin Lee';
     document.getElementById('headerTagline').textContent = data.tagline || 'Aspiring Nurse • Resilience • Integrity';
     document.getElementById('footerText').textContent = data.footerText || 'Thank you for viewing my Nursing E-Portfolio.';
     document.getElementById('quoteText').textContent = data.quote || '"Resilience has shaped my journey. Integrity guides my actions. Compassion inspires my future."';
     
-    // About
     document.getElementById('aboutText1').innerHTML = data.about1 || 'Hello! I\'m <strong>Jachin Lee</strong>, a Secondary 4 student with a passion for healthcare and a dream of becoming a nurse at Nanyang Polytechnic.';
     document.getElementById('aboutText2').innerHTML = data.about2 || 'Living with <strong>Type 1 Diabetes</strong> since I was two years old has allowed me to experience healthcare from a patient\'s perspective. Throughout my journey, I have been inspired by nurses who showed compassion, patience and professionalism. Their care motivates me to become someone who can make a positive difference in the lives of others.';
     
-    // Values
     document.getElementById('value1Title').textContent = data.value1Title || '💙 Resilience';
     document.getElementById('value1Text').textContent = data.value1Text || 'Growing up with diabetes has taught me perseverance. Every challenge has made me stronger and more determined to achieve my goals.';
     document.getElementById('value2Title').textContent = data.value2Title || '🤝 Integrity';
     document.getElementById('value2Text').textContent = data.value2Text || 'I believe honesty, responsibility and trust are the foundation of nursing. I strive to always do what is right and treat everyone with respect.';
     document.getElementById('nursingText').textContent = data.nursing || 'Healthcare has been a significant part of my life...';
     
-    // Achievements
     for(let i = 1; i <= 4; i++) {
-        const titleId = `achievement${i}Title`;
-        const textId = `achievement${i}Text`;
-        document.getElementById(titleId).textContent = data[`achievement${i}Title`] || '';
-        document.getElementById(textId).textContent = data[`achievement${i}Text`] || '';
+        document.getElementById(`achievement${i}Title`).textContent = data[`achievement${i}Title`] || '';
+        document.getElementById(`achievement${i}Text`).textContent = data[`achievement${i}Text`] || '';
     }
     
-    // Journey
     for(let i = 1; i <= 5; i++) {
-        const titleId = `journey${i}Title`;
-        const textId = `journey${i}Text`;
-        document.getElementById(titleId).textContent = data[`journey${i}Title`] || '';
-        document.getElementById(textId).textContent = data[`journey${i}Text`] || '';
+        document.getElementById(`journey${i}Title`).textContent = data[`journey${i}Title`] || '';
+        document.getElementById(`journey${i}Text`).textContent = data[`journey${i}Text`] || '';
     }
     
-    // Images
     document.getElementById('photoImg').src = data.photoImg || 'https://via.placeholder.com/250?text=Jachin+Lee';
     for(let i = 1; i <= 6; i++) {
         document.getElementById(`galleryImg${i}`).src = data[`galleryImg${i}`] || `https://via.placeholder.com/220x180?text=Image+${i}`;
@@ -956,7 +1002,7 @@ function closeAdminPanel() {
     document.getElementById('adminPanel').classList.remove('active');
 }
 
-function switchTab(tabName) {
+function switchTab(event, tabName) {
     document.querySelectorAll('.admin-tab-content').forEach(tab => {
         tab.classList.remove('active');
     });
@@ -968,7 +1014,11 @@ function switchTab(tabName) {
     event.target.classList.add('active');
 }
 
-function saveChanges() {
+async function saveChanges() {
+    const saveBtn = document.getElementById('saveBtn');
+    saveBtn.disabled = true;
+    saveBtn.innerHTML = '<span class="loading-spinner"></span>Saving...';
+    
     const data = {
         name: document.getElementById('inputName').value,
         tagline: document.getElementById('inputTagline').value,
@@ -998,21 +1048,75 @@ function saveChanges() {
         data[`galleryImg${i}`] = document.getElementById(`inputGalleryImg${i}`).value;
     }
     
-    // Save to localStorage
-    localStorage.setItem('portfolioData', JSON.stringify(data));
-    
-    // Apply changes
-    loadData();
-    
-    // Show success message
-    const successMsg = document.getElementById('successMessage');
-    successMsg.classList.add('show');
-    setTimeout(() => {
-        successMsg.classList.remove('show');
-    }, 3000);
+    try {
+        // Save to localStorage first
+        localStorage.setItem('portfolioData', JSON.stringify(data));
+        
+        // Try to save to GitHub
+        await saveToGitHub(data);
+        
+        // Apply changes
+        applyData(data);
+        
+        // Show success message
+        const successMsg = document.getElementById('successMessage');
+        successMsg.classList.add('show');
+        setTimeout(() => {
+            successMsg.classList.remove('show');
+        }, 3000);
+        
+    } catch (error) {
+        const errorMsg = document.getElementById('errorMessage');
+        errorMsg.textContent = '✗ Error: ' + error.message;
+        errorMsg.classList.add('show');
+        setTimeout(() => {
+            errorMsg.classList.remove('show');
+        }, 3000);
+    } finally {
+        saveBtn.disabled = false;
+        saveBtn.innerHTML = 'Save Changes';
+    }
 }
 
-// Navigation Toggle for Mobile
+async function saveToGitHub(data) {
+    const content = JSON.stringify(data, null, 2);
+    
+    // Get current file SHA
+    let sha = null;
+    try {
+        const response = await fetch(`https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/${DATA_FILE}`, {
+            headers: {
+                'Authorization': `token ${GITHUB_TOKEN}`
+            }
+        });
+        
+        if (response.ok) {
+            const fileData = await response.json();
+            sha = fileData.sha;
+        }
+    } catch (e) {
+        console.log('File does not exist yet');
+    }
+    
+    // Create/update file
+    const response = await fetch(`https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/${DATA_FILE}`, {
+        method: 'PUT',
+        headers: {
+            'Authorization': `token ${GITHUB_TOKEN}`,
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            message: 'Update portfolio data',
+            content: btoa(content),
+            sha: sha
+        })
+    });
+    
+    if (!response.ok) {
+        throw new Error('Failed to save to GitHub');
+    }
+}
+
 const navToggle = document.getElementById('navToggle');
 const navMenu = document.getElementById('navMenu');
 
@@ -1026,7 +1130,6 @@ document.querySelectorAll('#navMenu a').forEach(link => {
     });
 });
 
-// Close admin panel when clicking outside
 document.addEventListener('click', (e) => {
     const adminPanel = document.getElementById('adminPanel');
     const adminContent = adminPanel.querySelector('.admin-content');
@@ -1038,7 +1141,6 @@ document.addEventListener('click', (e) => {
     }
 });
 
-// Load data when page loads
 window.addEventListener('load', loadData);
 </script>
 
