@@ -21,15 +21,87 @@ body{
     line-height:1.8;
 }
 
+/* Navigation Bar */
+nav {
+    background: linear-gradient(135deg, #0a5ea8, #4cb8ff);
+    color: white;
+    padding: 15px 30px;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+nav .logo {
+    font-size: 24px;
+    font-weight: bold;
+}
+
+nav ul {
+    list-style: none;
+    display: flex;
+    gap: 30px;
+    align-items: center;
+}
+
+nav a {
+    color: white;
+    text-decoration: none;
+    font-weight: 500;
+    transition: 0.3s;
+    padding: 8px 12px;
+    border-radius: 5px;
+}
+
+nav a:hover {
+    background: rgba(255,255,255,0.2);
+    transform: translateY(-2px);
+}
+
+.nav-toggle {
+    display: none;
+    flex-direction: column;
+    cursor: pointer;
+}
+
+.nav-toggle span {
+    width: 25px;
+    height: 3px;
+    background: white;
+    margin: 5px 0;
+    transition: 0.3s;
+}
+
+.admin-btn {
+    background: rgba(255,255,255,0.3);
+    padding: 8px 16px;
+    border-radius: 20px;
+    cursor: pointer;
+    border: 1px solid white;
+    color: white;
+    font-weight: 600;
+    transition: 0.3s;
+}
+
+.admin-btn:hover {
+    background: white;
+    color: #0a5ea8;
+}
+
 header{
     background:linear-gradient(135deg,#0a5ea8,#4cb8ff);
     color:white;
     text-align:center;
     padding:100px 20px;
+    margin-top: 60px;
 }
 
 header h1{
     font-size:60px;
+    margin-bottom: 10px;
 }
 
 header p{
@@ -47,10 +119,14 @@ header p{
     border-radius:40px;
     font-weight:bold;
     transition:.3s;
+    cursor: pointer;
+    border: none;
+    font-size: 16px;
 }
 
 .btn:hover{
     transform:translateY(-5px);
+    box-shadow: 0 5px 20px rgba(0,0,0,0.2);
 }
 
 section{
@@ -83,6 +159,15 @@ h2{
     font-weight:bold;
     color:#0a5ea8;
     font-size:22px;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(10, 94, 168, 0.2);
+}
+
+.photo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
 }
 
 .cards{
@@ -96,6 +181,12 @@ h2{
     padding:25px;
     border-radius:18px;
     box-shadow:0 10px 20px rgba(0,0,0,.08);
+    transition: 0.3s;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 30px rgba(0,0,0,.15);
 }
 
 .timeline{
@@ -105,6 +196,20 @@ h2{
 
 .timeline div{
     margin-bottom:30px;
+    position: relative;
+}
+
+.timeline div::before {
+    content: '';
+    position: absolute;
+    left: -29px;
+    top: 5px;
+    width: 12px;
+    height: 12px;
+    background: #0a5ea8;
+    border-radius: 50%;
+    border: 3px solid white;
+    box-shadow: 0 0 0 3px #0a5ea8;
 }
 
 .gallery{
@@ -122,6 +227,21 @@ h2{
     align-items:center;
     color:#0a5ea8;
     font-weight:bold;
+    cursor: pointer;
+    transition: 0.3s;
+    position: relative;
+    overflow: hidden;
+}
+
+.placeholder:hover {
+    transform: scale(1.05);
+    box-shadow: 0 10px 25px rgba(10, 94, 168, 0.2);
+}
+
+.placeholder img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
 }
 
 .quote{
@@ -132,6 +252,7 @@ h2{
     font-size:22px;
     color:#0a5ea8;
     font-style:italic;
+    border-left: 5px solid #0a5ea8;
 }
 
 footer{
@@ -139,21 +260,322 @@ footer{
     color:white;
     text-align:center;
     padding:40px;
+    margin-top: 50px;
+}
+
+footer h2 {
+    color: white;
+    margin-bottom: 15px;
+}
+
+/* Modal */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 2000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.5);
+    animation: fadeIn 0.3s;
+    overflow-y: auto;
+}
+
+.modal-content {
+    background-color: white;
+    margin: 5% auto;
+    padding: 30px;
+    border-radius: 15px;
+    width: 90%;
+    max-width: 600px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+    animation: slideIn 0.3s;
+}
+
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.close:hover {
+    color: #000;
+}
+
+/* Admin Panel Styles */
+.admin-panel {
+    display: none;
+    position: fixed;
+    z-index: 3000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.5);
+    overflow-y: auto;
+}
+
+.admin-panel.active {
+    display: block;
+}
+
+.admin-content {
+    background: white;
+    margin: 20px auto;
+    padding: 30px;
+    border-radius: 15px;
+    max-width: 800px;
+    box-shadow: 0 10px 50px rgba(0,0,0,0.3);
+    animation: slideIn 0.3s;
+}
+
+.admin-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+    border-bottom: 2px solid #0a5ea8;
+    padding-bottom: 15px;
+}
+
+.admin-header h2 {
+    color: #0a5ea8;
+    margin: 0;
+}
+
+.admin-close {
+    font-size: 28px;
+    cursor: pointer;
+    color: #666;
+    background: none;
+    border: none;
+}
+
+.admin-tabs {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+    border-bottom: 1px solid #ddd;
+}
+
+.admin-tab {
+    padding: 10px 20px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-weight: 600;
+    color: #666;
+    transition: 0.3s;
+    border-bottom: 3px solid transparent;
+}
+
+.admin-tab.active {
+    color: #0a5ea8;
+    border-bottom-color: #0a5ea8;
+}
+
+.admin-tab-content {
+    display: none;
+}
+
+.admin-tab-content.active {
+    display: block;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: #0a5ea8;
+}
+
+.form-group input,
+.form-group textarea,
+.form-group select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+}
+
+.form-group textarea {
+    resize: vertical;
+    min-height: 100px;
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+    outline: none;
+    border-color: #0a5ea8;
+    box-shadow: 0 0 5px rgba(10, 94, 168, 0.2);
+}
+
+.admin-buttons {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+    margin-top: 30px;
+    border-top: 1px solid #ddd;
+    padding-top: 20px;
+}
+
+.btn-save {
+    background: #0a5ea8;
+    color: white;
+    padding: 12px 30px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: 0.3s;
+}
+
+.btn-save:hover {
+    background: #4cb8ff;
+    transform: translateY(-2px);
+}
+
+.btn-cancel {
+    background: #ddd;
+    color: #333;
+    padding: 12px 30px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: 0.3s;
+}
+
+.btn-cancel:hover {
+    background: #ccc;
+}
+
+.btn-export {
+    background: #4cb8ff;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    margin-top: 10px;
+}
+
+.success-message {
+    background: #d4edda;
+    color: #155724;
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    display: none;
+}
+
+.success-message.show {
+    display: block;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes slideIn {
+    from { transform: translateY(-50px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+html {
+    scroll-behavior: smooth;
 }
 
 @media(max-width:800px){
-.about{
-grid-template-columns:1fr;
-text-align:center;
+    nav {
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    nav ul {
+        display: none;
+        flex-direction: column;
+        gap: 10px;
+        width: 100%;
+    }
+
+    nav ul.active {
+        display: flex;
+    }
+
+    .nav-toggle {
+        display: flex;
+    }
+
+    .about{
+        grid-template-columns:1fr;
+        text-align:center;
+    }
+
+    .photo{
+        margin:auto;
+    }
+
+    header h1{
+        font-size:42px;
+    }
+
+    header {
+        margin-top: 0;
+        padding: 60px 20px;
+    }
+
+    section {
+        padding: 40px 20px;
+    }
+
+    h2 {
+        font-size: 28px;
+    }
+
+    .modal-content {
+        width: 95%;
+    }
+
+    .admin-content {
+        width: 95%;
+    }
+
+    .admin-tabs {
+        flex-wrap: wrap;
+    }
+
+    .admin-tab {
+        padding: 8px 15px;
+        font-size: 14px;
+    }
 }
 
-.photo{
-margin:auto;
+.fade-in {
+    animation: fadeInContent 0.8s ease-in;
 }
 
-header h1{
-font-size:42px;
-}
+@keyframes fadeInContent {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 </style>
 
@@ -161,198 +583,535 @@ font-size:42px;
 
 <body>
 
+<!-- Navigation Bar -->
+<nav id="navbar">
+    <div class="logo">Jachin Lee</div>
+    <ul id="navMenu">
+        <li><a href="#about">About Me</a></li>
+        <li><a href="#values">Values</a></li>
+        <li><a href="#nursing">Why Nursing</a></li>
+        <li><a href="#achievements">Achievements</a></li>
+        <li><a href="#journey">Journey</a></li>
+        <li><a href="#gallery">Gallery</a></li>
+    </ul>
+    <button class="admin-btn" onclick="openAdminPanel()">✏️ Edit</button>
+    <div class="nav-toggle" id="navToggle">
+        <span></span>
+        <span></span>
+        <span></span>
+    </div>
+</nav>
+
+<!-- Header -->
 <header>
-
-<h1>Jachin Lee</h1>
-
-<p>Aspiring Nurse • Resilience • Integrity</p>
-
-<a href="#about" class="btn">Explore My Journey</a>
-
+    <h1 id="headerName">Jachin Lee</h1>
+    <p id="headerTagline">Aspiring Nurse • Resilience • Integrity</p>
+    <a href="#about" class="btn">Explore My Journey</a>
 </header>
 
-<section id="about">
-
-<h2>About Me</h2>
-
-<div class="about">
-
-<div class="photo">
-Add Your Photo
-</div>
-
-<div>
-
-<p>
-
-Hello! I'm <strong>Jachin Lee</strong>, a Secondary 4 student with a passion for healthcare and a dream of becoming a nurse at Nanyang Polytechnic.
-
-Living with <strong>Type 1 Diabetes</strong> since I was two years old has allowed me to experience healthcare from a patient's perspective. Throughout my journey, I have been inspired by nurses who showed compassion, patience and professionalism. Their care motivates me to become someone who can make a positive difference in the lives of others.
-
-</p>
-
-</div>
-
-</div>
-
+<!-- About Section -->
+<section id="about" class="fade-in">
+    <h2>About Me</h2>
+    <div class="about">
+        <div class="photo">
+            <img id="photoImg" src="https://via.placeholder.com/250?text=Jachin+Lee" alt="Jachin Lee">
+        </div>
+        <div>
+            <p id="aboutText1">Hello! I'm <strong>Jachin Lee</strong>, a Secondary 4 student with a passion for healthcare and a dream of becoming a nurse at Nanyang Polytechnic.</p>
+            <p style="margin-top: 15px;" id="aboutText2">Living with <strong>Type 1 Diabetes</strong> since I was two years old has allowed me to experience healthcare from a patient's perspective. Throughout my journey, I have been inspired by nurses who showed compassion, patience and professionalism. Their care motivates me to become someone who can make a positive difference in the lives of others.</p>
+        </div>
+    </div>
 </section>
 
-<section>
-
-<h2>My Core Values</h2>
-
-<div class="cards">
-
-<div class="card">
-
-<h3>💙 Resilience</h3>
-
-<p>
-Growing up with diabetes has taught me perseverance. Every challenge has made me stronger and more determined to achieve my goals.
-</p>
-
-</div>
-
-<div class="card">
-
-<h3>🤝 Integrity</h3>
-
-<p>
-I believe honesty, responsibility and trust are the foundation of nursing. I strive to always do what is right and treat everyone with respect.
-</p>
-
-</div>
-
-</div>
-
+<!-- Core Values Section -->
+<section id="values" class="fade-in">
+    <h2>My Core Values</h2>
+    <div class="cards">
+        <div class="card">
+            <h3 id="value1Title">💙 Resilience</h3>
+            <p id="value1Text">Growing up with diabetes has taught me perseverance. Every challenge has made me stronger and more determined to achieve my goals.</p>
+        </div>
+        <div class="card">
+            <h3 id="value2Title">🤝 Integrity</h3>
+            <p id="value2Text">I believe honesty, responsibility and trust are the foundation of nursing. I strive to always do what is right and treat everyone with respect.</p>
+        </div>
+    </div>
 </section>
 
-<section>
-
-<h2>Why Nursing?</h2>
-
-<div class="card">
-
-<p>
-
-Healthcare has been a significant part of my life. Through my own experiences, I have learned that nurses do more than provide treatment—they offer comfort, reassurance and hope. I aspire to become a compassionate nurse who can positively impact patients and their families while continually learning and growing in the healthcare profession.
-
-</p>
-
-</div>
-
+<!-- Why Nursing Section -->
+<section id="nursing" class="fade-in">
+    <h2>Why Nursing?</h2>
+    <div class="card">
+        <p id="nursingText">Healthcare has been a significant part of my life. Through my own experiences, I have learned that nurses do more than provide treatment—they offer comfort, reassurance and hope. I aspire to become a compassionate nurse who can positively impact patients and their families while continually learning and growing in the healthcare profession.</p>
+    </div>
 </section>
 
-<section>
+<!-- Leadership & Achievements Section -->
+<section id="achievements" class="fade-in">
+    <h2>Leadership & Achievements</h2>
+    <div class="cards">
+        <div class="card">
+            <div style="font-size: 40px; margin-bottom: 15px;">🏸</div>
+            <h3 id="achievement1Title">National School Games</h3>
+            <p id="achievement1Text">Represented Chua Chu Kang Secondary School in the National School Games (NSG).</p>
+        </div>
 
-<h2>Leadership & Achievements</h2>
+        <div class="card">
+            <div style="font-size: 40px; margin-bottom: 15px;">⭐</div>
+            <h3 id="achievement2Title">Badminton EXCO</h3>
+            <p id="achievement2Text">Served as a Badminton EXCO, supporting teammates and organising activities.</p>
+        </div>
 
-<div class="cards">
+        <div class="card">
+            <div style="font-size: 40px; margin-bottom: 15px;">🌍</div>
+            <h3 id="achievement3Title">Overseas VIA</h3>
+            <p id="achievement3Text">Represented my school in an Overseas VIA Project in Ho Chi Minh City, Vietnam.</p>
+        </div>
 
-<div class="card">
-🏸<br><br>
-Represented Chua Chu Kang Secondary School in the National School Games (NSG).
-</div>
-
-<div class="card">
-⭐<br><br>
-Served as a Badminton EXCO, supporting teammates and organising activities.
-</div>
-
-<div class="card">
-🌍<br><br>
-Represented my school in an Overseas VIA Project in Ho Chi Minh City, Vietnam.
-</div>
-
-<div class="card">
-❤️<br><br>
-Participated in annual VIA projects, serving the community and helping others.
-</div>
-
-</div>
-
+        <div class="card">
+            <div style="font-size: 40px; margin-bottom: 15px;">❤️</div>
+            <h3 id="achievement4Title">Community Service</h3>
+            <p id="achievement4Text">Participated in annual VIA projects, serving the community and helping others.</p>
+        </div>
+    </div>
 </section>
 
-<section>
+<!-- Journey Section -->
+<section id="journey" class="fade-in">
+    <h2>My Journey</h2>
+    <div class="timeline">
+        <div>
+            <h3 id="journey1Title">Age 2</h3>
+            <p id="journey1Text">Diagnosed with Type 1 Diabetes.</p>
+        </div>
 
-<h2>My Journey</h2>
+        <div>
+            <h3 id="journey2Title">Growing Up</h3>
+            <p id="journey2Text">Regular hospital visits inspired me through the kindness of healthcare professionals.</p>
+        </div>
 
-<div class="timeline">
+        <div>
+            <h3 id="journey3Title">Secondary School</h3>
+            <p id="journey3Text">Represented my school in badminton and developed teamwork and discipline.</p>
+        </div>
 
-<div>
-<h3>Age 2</h3>
-<p>Diagnosed with Type 1 Diabetes.</p>
-</div>
+        <div>
+            <h3 id="journey4Title">Leadership</h3>
+            <p id="journey4Text">Served as Badminton EXCO and participated in overseas VIA.</p>
+        </div>
 
-<div>
-<h3>Growing Up</h3>
-<p>Regular hospital visits inspired me through the kindness of healthcare professionals.</p>
-</div>
-
-<div>
-<h3>Secondary School</h3>
-<p>Represented my school in badminton and developed teamwork and discipline.</p>
-</div>
-
-<div>
-<h3>Leadership</h3>
-<p>Served as Badminton EXCO and participated in overseas VIA.</p>
-</div>
-
-<div>
-<h3>Today</h3>
-<p>Applying to Nanyang Polytechnic Nursing to begin my journey towards becoming a registered nurse.</p>
-</div>
-
-</div>
-
+        <div>
+            <h3 id="journey5Title">Today</h3>
+            <p id="journey5Text">Applying to Nanyang Polytechnic Nursing to begin my journey towards becoming a registered nurse.</p>
+        </div>
+    </div>
 </section>
 
-<section>
-
-<h2>Gallery</h2>
-
-<div class="gallery">
-
-<div class="placeholder">Profile Photo</div>
-
-<div class="placeholder">NSG Badminton</div>
-
-<div class="placeholder">Vietnam VIA</div>
-
-<div class="placeholder">Certificates</div>
-
-<div class="placeholder">Leadership</div>
-
-<div class="placeholder">Community Service</div>
-
-</div>
-
+<!-- Gallery Section -->
+<section id="gallery" class="fade-in">
+    <h2>Gallery</h2>
+    <div class="gallery">
+        <div class="placeholder">
+            <img id="galleryImg1" src="https://via.placeholder.com/220x180?text=Profile+Photo" alt="Profile Photo">
+        </div>
+        <div class="placeholder">
+            <img id="galleryImg2" src="https://via.placeholder.com/220x180?text=NSG+Badminton" alt="NSG Badminton">
+        </div>
+        <div class="placeholder">
+            <img id="galleryImg3" src="https://via.placeholder.com/220x180?text=Vietnam+VIA" alt="Vietnam VIA">
+        </div>
+        <div class="placeholder">
+            <img id="galleryImg4" src="https://via.placeholder.com/220x180?text=Certificates" alt="Certificates">
+        </div>
+        <div class="placeholder">
+            <img id="galleryImg5" src="https://via.placeholder.com/220x180?text=Leadership" alt="Leadership">
+        </div>
+        <div class="placeholder">
+            <img id="galleryImg6" src="https://via.placeholder.com/220x180?text=Community+Service" alt="Community Service">
+        </div>
+    </div>
 </section>
 
-<section>
-
-<div class="quote">
-
-"Resilience has shaped my journey. Integrity guides my actions. Compassion inspires my future."
-
-</div>
-
+<!-- Quote Section -->
+<section class="fade-in">
+    <div class="quote" id="quoteText">
+        "Resilience has shaped my journey. Integrity guides my actions. Compassion inspires my future."
+    </div>
 </section>
 
+<!-- Footer -->
 <footer>
-
-<h2>Thank You</h2>
-
-<p>
-Thank you for viewing my Nursing E-Portfolio.
-</p>
-
-<p style="margin-top:15px;">
-© 2026 Jachin Lee
-</p>
-
+    <h2>Thank You</h2>
+    <p id="footerText">Thank you for viewing my Nursing E-Portfolio.</p>
+    <p style="margin-top:15px;">© 2026 Jachin Lee | All Rights Reserved</p>
 </footer>
+
+<!-- Admin Panel -->
+<div id="adminPanel" class="admin-panel">
+    <div class="admin-content">
+        <div class="admin-header">
+            <h2>Edit Portfolio</h2>
+            <button class="admin-close" onclick="closeAdminPanel()">×</button>
+        </div>
+
+        <div class="success-message" id="successMessage">✓ Changes saved successfully!</div>
+
+        <div class="admin-tabs">
+            <button class="admin-tab active" onclick="switchTab('basic')">Basic Info</button>
+            <button class="admin-tab" onclick="switchTab('about')">About</button>
+            <button class="admin-tab" onclick="switchTab('values')">Values</button>
+            <button class="admin-tab" onclick="switchTab('achievements')">Achievements</button>
+            <button class="admin-tab" onclick="switchTab('journey')">Journey</button>
+            <button class="admin-tab" onclick="switchTab('images')">Images</button>
+        </div>
+
+        <!-- Basic Info Tab -->
+        <div id="basicTab" class="admin-tab-content active">
+            <div class="form-group">
+                <label>Full Name</label>
+                <input type="text" id="inputName" placeholder="Enter your name">
+            </div>
+            <div class="form-group">
+                <label>Tagline</label>
+                <input type="text" id="inputTagline" placeholder="e.g., Aspiring Nurse • Resilience • Integrity">
+            </div>
+            <div class="form-group">
+                <label>Footer Text</label>
+                <input type="text" id="inputFooter" placeholder="Footer message">
+            </div>
+            <div class="form-group">
+                <label>Quote</label>
+                <textarea id="inputQuote" placeholder="Your inspirational quote"></textarea>
+            </div>
+        </div>
+
+        <!-- About Tab -->
+        <div id="aboutTab" class="admin-tab-content">
+            <div class="form-group">
+                <label>About Text 1</label>
+                <textarea id="inputAbout1" placeholder="First paragraph about yourself"></textarea>
+            </div>
+            <div class="form-group">
+                <label>About Text 2</label>
+                <textarea id="inputAbout2" placeholder="Second paragraph about yourself"></textarea>
+            </div>
+        </div>
+
+        <!-- Values Tab -->
+        <div id="valuesTab" class="admin-tab-content">
+            <div class="form-group">
+                <label>Value 1 Title</label>
+                <input type="text" id="inputValue1Title" placeholder="e.g., 💙 Resilience">
+            </div>
+            <div class="form-group">
+                <label>Value 1 Description</label>
+                <textarea id="inputValue1Text" placeholder="Description of first value"></textarea>
+            </div>
+            <div class="form-group">
+                <label>Value 2 Title</label>
+                <input type="text" id="inputValue2Title" placeholder="e.g., 🤝 Integrity">
+            </div>
+            <div class="form-group">
+                <label>Value 2 Description</label>
+                <textarea id="inputValue2Text" placeholder="Description of second value"></textarea>
+            </div>
+            <div class="form-group">
+                <label>Why Nursing?</label>
+                <textarea id="inputNursing" placeholder="Why you want to pursue nursing"></textarea>
+            </div>
+        </div>
+
+        <!-- Achievements Tab -->
+        <div id="achievementsTab" class="admin-tab-content">
+            <div class="form-group">
+                <label>Achievement 1 Title</label>
+                <input type="text" id="inputAchievement1Title">
+            </div>
+            <div class="form-group">
+                <label>Achievement 1 Description</label>
+                <textarea id="inputAchievement1Text"></textarea>
+            </div>
+            <div class="form-group">
+                <label>Achievement 2 Title</label>
+                <input type="text" id="inputAchievement2Title">
+            </div>
+            <div class="form-group">
+                <label>Achievement 2 Description</label>
+                <textarea id="inputAchievement2Text"></textarea>
+            </div>
+            <div class="form-group">
+                <label>Achievement 3 Title</label>
+                <input type="text" id="inputAchievement3Title">
+            </div>
+            <div class="form-group">
+                <label>Achievement 3 Description</label>
+                <textarea id="inputAchievement3Text"></textarea>
+            </div>
+            <div class="form-group">
+                <label>Achievement 4 Title</label>
+                <input type="text" id="inputAchievement4Title">
+            </div>
+            <div class="form-group">
+                <label>Achievement 4 Description</label>
+                <textarea id="inputAchievement4Text"></textarea>
+            </div>
+        </div>
+
+        <!-- Journey Tab -->
+        <div id="journeyTab" class="admin-tab-content">
+            <div class="form-group">
+                <label>Journey 1 Title</label>
+                <input type="text" id="inputJourney1Title">
+            </div>
+            <div class="form-group">
+                <label>Journey 1 Description</label>
+                <input type="text" id="inputJourney1Text">
+            </div>
+            <div class="form-group">
+                <label>Journey 2 Title</label>
+                <input type="text" id="inputJourney2Title">
+            </div>
+            <div class="form-group">
+                <label>Journey 2 Description</label>
+                <input type="text" id="inputJourney2Text">
+            </div>
+            <div class="form-group">
+                <label>Journey 3 Title</label>
+                <input type="text" id="inputJourney3Title">
+            </div>
+            <div class="form-group">
+                <label>Journey 3 Description</label>
+                <input type="text" id="inputJourney3Text">
+            </div>
+            <div class="form-group">
+                <label>Journey 4 Title</label>
+                <input type="text" id="inputJourney4Title">
+            </div>
+            <div class="form-group">
+                <label>Journey 4 Description</label>
+                <input type="text" id="inputJourney4Text">
+            </div>
+            <div class="form-group">
+                <label>Journey 5 Title</label>
+                <input type="text" id="inputJourney5Title">
+            </div>
+            <div class="form-group">
+                <label>Journey 5 Description</label>
+                <input type="text" id="inputJourney5Text">
+            </div>
+        </div>
+
+        <!-- Images Tab -->
+        <div id="imagesTab" class="admin-tab-content">
+            <div class="form-group">
+                <label>Profile Photo URL</label>
+                <input type="text" id="inputPhotoImg" placeholder="https://...">
+            </div>
+            <div class="form-group">
+                <label>Gallery Image 1 URL</label>
+                <input type="text" id="inputGalleryImg1" placeholder="https://...">
+            </div>
+            <div class="form-group">
+                <label>Gallery Image 2 URL</label>
+                <input type="text" id="inputGalleryImg2" placeholder="https://...">
+            </div>
+            <div class="form-group">
+                <label>Gallery Image 3 URL</label>
+                <input type="text" id="inputGalleryImg3" placeholder="https://...">
+            </div>
+            <div class="form-group">
+                <label>Gallery Image 4 URL</label>
+                <input type="text" id="inputGalleryImg4" placeholder="https://...">
+            </div>
+            <div class="form-group">
+                <label>Gallery Image 5 URL</label>
+                <input type="text" id="inputGalleryImg5" placeholder="https://...">
+            </div>
+            <div class="form-group">
+                <label>Gallery Image 6 URL</label>
+                <input type="text" id="inputGalleryImg6" placeholder="https://...">
+            </div>
+        </div>
+
+        <div class="admin-buttons">
+            <button class="btn-cancel" onclick="closeAdminPanel()">Cancel</button>
+            <button class="btn-save" onclick="saveChanges()">Save Changes</button>
+        </div>
+    </div>
+</div>
+
+<script>
+// Load data from localStorage on page load
+function loadData() {
+    const data = JSON.parse(localStorage.getItem('portfolioData')) || {};
+    
+    // Basic Info
+    document.getElementById('headerName').textContent = data.name || 'Jachin Lee';
+    document.getElementById('headerTagline').textContent = data.tagline || 'Aspiring Nurse • Resilience • Integrity';
+    document.getElementById('footerText').textContent = data.footerText || 'Thank you for viewing my Nursing E-Portfolio.';
+    document.getElementById('quoteText').textContent = data.quote || '"Resilience has shaped my journey. Integrity guides my actions. Compassion inspires my future."';
+    
+    // About
+    document.getElementById('aboutText1').innerHTML = data.about1 || 'Hello! I\'m <strong>Jachin Lee</strong>, a Secondary 4 student with a passion for healthcare and a dream of becoming a nurse at Nanyang Polytechnic.';
+    document.getElementById('aboutText2').innerHTML = data.about2 || 'Living with <strong>Type 1 Diabetes</strong> since I was two years old has allowed me to experience healthcare from a patient\'s perspective. Throughout my journey, I have been inspired by nurses who showed compassion, patience and professionalism. Their care motivates me to become someone who can make a positive difference in the lives of others.';
+    
+    // Values
+    document.getElementById('value1Title').textContent = data.value1Title || '💙 Resilience';
+    document.getElementById('value1Text').textContent = data.value1Text || 'Growing up with diabetes has taught me perseverance. Every challenge has made me stronger and more determined to achieve my goals.';
+    document.getElementById('value2Title').textContent = data.value2Title || '🤝 Integrity';
+    document.getElementById('value2Text').textContent = data.value2Text || 'I believe honesty, responsibility and trust are the foundation of nursing. I strive to always do what is right and treat everyone with respect.';
+    document.getElementById('nursingText').textContent = data.nursing || 'Healthcare has been a significant part of my life...';
+    
+    // Achievements
+    for(let i = 1; i <= 4; i++) {
+        const titleId = `achievement${i}Title`;
+        const textId = `achievement${i}Text`;
+        document.getElementById(titleId).textContent = data[`achievement${i}Title`] || '';
+        document.getElementById(textId).textContent = data[`achievement${i}Text`] || '';
+    }
+    
+    // Journey
+    for(let i = 1; i <= 5; i++) {
+        const titleId = `journey${i}Title`;
+        const textId = `journey${i}Text`;
+        document.getElementById(titleId).textContent = data[`journey${i}Title`] || '';
+        document.getElementById(textId).textContent = data[`journey${i}Text`] || '';
+    }
+    
+    // Images
+    document.getElementById('photoImg').src = data.photoImg || 'https://via.placeholder.com/250?text=Jachin+Lee';
+    for(let i = 1; i <= 6; i++) {
+        document.getElementById(`galleryImg${i}`).src = data[`galleryImg${i}`] || `https://via.placeholder.com/220x180?text=Image+${i}`;
+    }
+}
+
+// Admin Panel Functions
+function openAdminPanel() {
+    const data = JSON.parse(localStorage.getItem('portfolioData')) || {};
+    
+    // Populate form fields
+    document.getElementById('inputName').value = data.name || 'Jachin Lee';
+    document.getElementById('inputTagline').value = data.tagline || 'Aspiring Nurse • Resilience • Integrity';
+    document.getElementById('inputFooter').value = data.footerText || 'Thank you for viewing my Nursing E-Portfolio.';
+    document.getElementById('inputQuote').value = data.quote || '"Resilience has shaped my journey. Integrity guides my actions. Compassion inspires my future."';
+    
+    document.getElementById('inputAbout1').value = (data.about1 || '').replace(/<[^>]*>/g, '');
+    document.getElementById('inputAbout2').value = (data.about2 || '').replace(/<[^>]*>/g, '');
+    
+    document.getElementById('inputValue1Title').value = data.value1Title || '💙 Resilience';
+    document.getElementById('inputValue1Text').value = data.value1Text || '';
+    document.getElementById('inputValue2Title').value = data.value2Title || '🤝 Integrity';
+    document.getElementById('inputValue2Text').value = data.value2Text || '';
+    document.getElementById('inputNursing').value = data.nursing || '';
+    
+    for(let i = 1; i <= 4; i++) {
+        document.getElementById(`inputAchievement${i}Title`).value = data[`achievement${i}Title`] || '';
+        document.getElementById(`inputAchievement${i}Text`).value = data[`achievement${i}Text`] || '';
+    }
+    
+    for(let i = 1; i <= 5; i++) {
+        document.getElementById(`inputJourney${i}Title`).value = data[`journey${i}Title`] || '';
+        document.getElementById(`inputJourney${i}Text`).value = data[`journey${i}Text`] || '';
+    }
+    
+    document.getElementById('inputPhotoImg').value = data.photoImg || '';
+    for(let i = 1; i <= 6; i++) {
+        document.getElementById(`inputGalleryImg${i}`).value = data[`galleryImg${i}`] || '';
+    }
+    
+    document.getElementById('adminPanel').classList.add('active');
+}
+
+function closeAdminPanel() {
+    document.getElementById('adminPanel').classList.remove('active');
+}
+
+function switchTab(tabName) {
+    // Hide all tabs
+    document.querySelectorAll('.admin-tab-content').forEach(tab => {
+        tab.classList.remove('active');
+    });
+    document.querySelectorAll('.admin-tab').forEach(btn => {
+        btn.classList.remove('active');
+    });
+    
+    // Show selected tab
+    document.getElementById(tabName + 'Tab').classList.add('active');
+    event.target.classList.add('active');
+}
+
+function saveChanges() {
+    const data = {
+        name: document.getElementById('inputName').value,
+        tagline: document.getElementById('inputTagline').value,
+        footerText: document.getElementById('inputFooter').value,
+        quote: document.getElementById('inputQuote').value,
+        about1: document.getElementById('inputAbout1').value,
+        about2: document.getElementById('inputAbout2').value,
+        value1Title: document.getElementById('inputValue1Title').value,
+        value1Text: document.getElementById('inputValue1Text').value,
+        value2Title: document.getElementById('inputValue2Title').value,
+        value2Text: document.getElementById('inputValue2Text').value,
+        nursing: document.getElementById('inputNursing').value,
+        photoImg: document.getElementById('inputPhotoImg').value,
+    };
+    
+    for(let i = 1; i <= 4; i++) {
+        data[`achievement${i}Title`] = document.getElementById(`inputAchievement${i}Title`).value;
+        data[`achievement${i}Text`] = document.getElementById(`inputAchievement${i}Text`).value;
+    }
+    
+    for(let i = 1; i <= 5; i++) {
+        data[`journey${i}Title`] = document.getElementById(`inputJourney${i}Title`).value;
+        data[`journey${i}Text`] = document.getElementById(`inputJourney${i}Text`).value;
+    }
+    
+    for(let i = 1; i <= 6; i++) {
+        data[`galleryImg${i}`] = document.getElementById(`inputGalleryImg${i}`).value;
+    }
+    
+    localStorage.setItem('portfolioData', JSON.stringify(data));
+    
+    // Show success message
+    const successMsg = document.getElementById('successMessage');
+    successMsg.classList.add('show');
+    setTimeout(() => {
+        successMsg.classList.remove('show');
+    }, 3000);
+    
+    // Reload data
+    loadData();
+}
+
+// Close admin panel when clicking outside
+document.addEventListener('click', (e) => {
+    const adminPanel = document.getElementById('adminPanel');
+    const adminContent = adminPanel.querySelector('.admin-content');
+    
+    if (adminPanel.classList.contains('active') && 
+        !adminContent.contains(e.target) && 
+        !e.target.classList.contains('admin-btn')) {
+        closeAdminPanel();
+    }
+});
+
+// Navigation Toggle for Mobile
+const navToggle = document.getElementById('navToggle');
+const navMenu = document.getElementById('navMenu');
+
+navToggle.addEventListener('click', () => {
+    navMenu.classList.toggle('active');
+});
+
+document.querySelectorAll('#navMenu a').forEach(link => {
+    link.addEventListener('click', () => {
+        navMenu.classList.remove('active');
+    });
+});
+
+// Load data when page loads
+window.addEventListener('load', loadData);
+</script>
 
 </body>
 </html>
