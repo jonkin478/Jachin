@@ -1,0 +1,44 @@
+async function saveToGitHub(data) {
+    const content = JSON.stringify(data, null, 2);
+    
+    // Get current file SHA
+    let sha = null;
+    try {
+        const response = await fetch(`https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/${DATA_FILE}`, {
+            headers: {
+                'Authorization': `token ${GITHUB_TOKEN}`
+            }
+        });
+        
+        if (response.ok) {
+            const fileData = await response.json();
+            sha = fileData.sha;
+        }
+    } catch (e) {
+        console.log('File does not exist yet');
+    }
+    
+    // SAFE UTF-8 BASE64 ENCODING FIX:
+    // This breaks the string down into raw UTF-8 bytes so btoa won't crash on emojis.
+    const bytes = new TextEncoder().encode(content);
+    const binString = String.fromCodePoint(...bytes);
+    const encodedContent = btoa(binString);
+    
+    // Create/update file
+    const response = await fetch(`https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/${DATA_FILE}`, {
+        method: 'PUT',
+        headers: {
+            'Authorization': `token ${GITHUB_TOKEN}`,
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            message: 'Update portfolio data',
+            content: encodedContent, // Using the safely encoded content here
+            sha: sha
+        })
+    });
+    
+    if (!response.ok) {
+        throw new Error('Failed to save to GitHub');
+    }
+}
